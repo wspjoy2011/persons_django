@@ -1,13 +1,16 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 
+menu = ["About us", "Add article", "Feedback", "Login"]
+
 
 def index(request):
-    return HttpResponse("<h1>Main page.</h1>")
+    context = {"menu": menu}
+    return render(request, "base/index.html", context)
 
 
 def categories(request, pk):
-    response = f"<h1>Category {pk}.</h1>"
+    context = {"pk": pk}
 
     if pk > 100:
         return redirect('index')
@@ -15,9 +18,10 @@ def categories(request, pk):
 
     if request.method == 'GET':
         if request.GET:
-            for key, value in request.GET.items():
-                response += f"<p>{key} => {value}<p>"
-    return HttpResponse(response)
+            context.update(request.GET.items())
+            # for key, value in request.GET.items():
+            #     response += f"<p>{key} => {value}<p>"
+    return render(request, 'base/categories.html', context)
 
 
 def page_not_found(request, exception):
