@@ -5,3 +5,5 @@ urlpatterns = [
     path('', index, name='index'),
     path('categories/<int:pk>/', categories, name='categories'),
 ]
+
+
