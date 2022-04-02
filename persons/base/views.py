@@ -1,17 +1,26 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 
+from .models import Person
+
 menu = ["About us", "Add article", "Feedback", "Login"]
 
 
 def index(request):
-    context = {"menu": menu}
+    persons = Person.objects.all()
+    context = {
+        "menu": menu,
+        "persons": persons,
+        "title": "Main page"
+    }
     return render(request, "base/index.html", context)
 
 
 def categories(request, pk):
-    context = {"pk": pk}
-
+    person = Person.objects.get(pk=pk)
+    context = {
+        "person": person
+    }
     if pk > 100:
         return redirect('index')
         # raise Http404()

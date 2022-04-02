@@ -1,16 +1,15 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Index page</title>
-</head>
-<body>
-    <h1>Index page.</h1>
-    {% for m in menu %}
-        <li><a href="#">{{ m }}</a></li>
-    {% endfor %}
-</body>
-</html>
+{% extends 'base/base.html' %}
+
+{% block content %}
+<ul class="list-articles">
+	{% for p in persons %}
+			<li><h2>{{p.title}}</h2>
+	{% autoescape on %}
+	{{p.content|linebreaks|truncatewords:50}}
+	{% endautoescape %}
+			<div class="clear"></div>
+			<p class="link-read-post"><a href="#">Читать пост</a></p>
+			</li>
+	{% endfor %}
+</ul>
+{% endblock %}
