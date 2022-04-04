@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Person, Category, Menu
 
@@ -34,11 +34,11 @@ def categories(request, pk):
 
 
 def show_post(request, pk):
-    person = Person.objects.get(pk=pk)
+    person = get_object_or_404(Person, pk=pk)
 
     context = {
-        'title': 'Person page',
-        'person': person,
+        'title': f'{person.title}',
+        'person': person
     }
 
     return render(request, 'base/show_post.html', context)

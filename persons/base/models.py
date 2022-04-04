@@ -4,6 +4,7 @@ from django.urls import reverse
 
 class Person(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     content = models.TextField(blank=True)
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/')
     cat = models.ForeignKey('Category', on_delete=models.CASCADE)
@@ -25,6 +26,7 @@ class Person(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
 
     class Meta:
         verbose_name_plural = "categories"

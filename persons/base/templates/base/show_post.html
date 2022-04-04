@@ -1,7 +1,11 @@
 {% extends 'base/base.html' %}
 
-{% block title %} person.title {% endblock %}
-
 {% block content %}
-    {{ person.content }}
+<h1>{{person.title}}</h1>
+
+{% if person.photo %}
+<p><img class="img-article-left" src="{{person.photo.url}}"></p>
+{% endif %}
+
+{{person.content|linebreaks}}
 {% endblock %}
