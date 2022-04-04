@@ -9,10 +9,12 @@ class Person(models.Model):
     cat = models.ForeignKey('Category', on_delete=models.CASCADE)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=True)
+    is_published = models.BooleanField(default=True, verbose_name='publish')
 
     class Meta:
         ordering = ["-time_update", "-time_create"]
+        verbose_name_plural = 'Persons'
+        verbose_name = 'Famous persons'
 
     def __str__(self):
         return self.title

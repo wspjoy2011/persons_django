@@ -3,52 +3,44 @@ from django.shortcuts import render, redirect
 
 from .models import Person, Category, Menu
 
-# menu = [
-#     {'title': 'Add article', 'url_name': 'add_page'},
-#     {'title': 'Feedback', 'url_name': 'feedback'},
-#     {'title': 'About', 'url_name': 'about'},
-#     {'title': 'Login', 'url_name': 'login'},
-# ]
-
 
 def index(request):
     persons = Person.objects.all()
-    cats = Category.objects.all()
-    menu = Menu.objects.all()
     context = {
-        "menu": menu,
         "persons": persons,
-        'cats': cats,
-        "title": "Main page"
+        "title": "Main page",
+        'cat_selected': 0
     }
     return render(request, "base/index.html", context)
 
 
 def categories(request, pk):
-    person = Person.objects.get(pk=pk)
+    persons = Person.objects.filter(cat=pk)
+    try:
+        cat_name = Category.objects.get(pk=pk)
+    except:
+        return redirect('index')
+
     context = {
-        "person": person
+        "persons": persons,
+        'title': f'Category {cat_name.name}',
+        'cat_selected': pk
     }
-    # if pk > 100:
-    #     return redirect('index')
-    #     # raise Http404()
 
     if request.method == 'GET':
         if request.GET:
             context.update(request.GET.items())
-    return render(request, 'base/categories.html', context)
+    return render(request, 'base/index.html', context)
 
 
 def show_post(request, pk):
     person = Person.objects.get(pk=pk)
-    menu = Menu.objects.all()
-    cats = Category.objects.all()
+
     context = {
         'title': 'Person page',
-        'menu': menu,
         'person': person,
-        'cats': cats
     }
+
     return render(request, 'base/show_post.html', context)
 
 

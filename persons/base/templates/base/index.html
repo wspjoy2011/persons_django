@@ -3,7 +3,16 @@
 {% block content %}
 <ul class="list-articles">
 	{% for p in persons %}
-			<li><h2>{{p.title}}</h2>
+		<li>
+			<div class="article-panel">
+				<p class="first">Category: {{p.cat}}</p>
+				<p class="last">Date: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
+			</div>
+			{% if p.photo %}
+			<p><img class="img-article-left thumb" src="{{ p.photo.url }}"></p>
+			{% endif %}
+
+			<h2>{{p.title}}</h2>
 	{% autoescape on %}
 	{{p.content|linebreaks|truncatewords:50}}
 	{% endautoescape %}
@@ -11,5 +20,9 @@
 			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Read post</a></p>
 			</li>
 	{% endfor %}
+
+	{% if not persons %}
+	<h1>No posts in this category.</h1>
+	{% endif %}
 </ul>
 {% endblock %}
