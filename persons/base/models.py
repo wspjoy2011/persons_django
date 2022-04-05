@@ -21,7 +21,7 @@ class Person(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('post', kwargs={'pk': self.pk})
+        return reverse('post', kwargs={'post_slug': self.slug})
 
 
 class Category(models.Model):
@@ -36,7 +36,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('categories', kwargs={'pk': self.pk})
+        return reverse('categories', kwargs={'cat_slug': self.slug})
 
 
 class Menu(models.Model):

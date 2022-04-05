@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    <form action="{% url 'add_page' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add</button>
+    </form>
+
+<script src="{% static 'base/js/slug.js' %}"></script>
+{% endblock %}

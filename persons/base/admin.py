@@ -10,14 +10,13 @@ class PersonAdmin(admin.ModelAdmin):
     empty_value_display = '-empty-'
     list_editable = ('is_published',)
     list_filter = ('is_published', 'time_create')
-    prepopulated_fields = {'slug': ('name',)}
+    prepopulated_fields = {'slug': ('title',)}
 
 
 class MenuAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'url_name')
     list_display_links = ('id', 'name')
     search_fields = ('name', 'url_name')
-
 
 
 class CategoryAdmin(admin.ModelAdmin):
