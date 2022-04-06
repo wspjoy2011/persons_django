@@ -6,7 +6,7 @@ function val() {
     let temp = '';
     for (let i = 0; i < from.length; i++) {
         if (from.charAt(i).match(/[a-z]/i)){
-            temp += from.charAt(i);
+            temp += from.charAt(i).toLowerCase();
         }
         else {
             temp += '-'

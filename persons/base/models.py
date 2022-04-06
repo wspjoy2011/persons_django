@@ -25,7 +25,7 @@ class Person(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, db_index=True)
+    name = models.CharField(max_length=100, db_index=True, unique=True)
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
 
     class Meta:
@@ -40,8 +40,8 @@ class Category(models.Model):
 
 
 class Menu(models.Model):
-    name = models.CharField(max_length=50, db_index=True)
-    url_name = models.CharField(max_length=100, db_index=True)
+    name = models.CharField(max_length=50, db_index=True, unique=True)
+    url_name = models.CharField(max_length=100, db_index=True, unique=True)
 
     class Meta:
         verbose_name_plural = 'menu'
