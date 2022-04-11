@@ -5,7 +5,7 @@ function val() {
     let to = document.getElementById("id_slug")
     let temp = '';
     for (let i = 0; i < from.length; i++) {
-        if (from.charAt(i).match(/[a-z]/i)){
+        if (from.charAt(i).match(/[a-z0-9]/i)){
             temp += from.charAt(i).toLowerCase();
         }
         else {

@@ -1,44 +1,47 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Person, Category, Menu
-from .forms import AddPostForm
+from .forms import AddPostForm, RegisterUserForm
+from .utils import DataMixin
 
 
-class PersonHome(ListView):
+class PersonHome(DataMixin, ListView):
     model = Person
     template_name = 'base/index.html'
     context_object_name = 'persons'
-    extra_context = {
-        'title': 'Persons page',
-    }
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cat_selected'] = 0
+        c_def = self.get_user_context(title='Persons page', cat_selected=0)
+        context.update(c_def)
         return context
 
     def get_queryset(self):
         return Person.objects.filter(is_published=True)
 
 
-class PersonCategory(ListView):
+class PersonCategory(DataMixin, ListView):
     template_name = 'base/index.html'
     context_object_name = 'persons'
     allow_empty = False
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cat_selected'] = Category.objects.get(slug=self.kwargs['cat_slug']).pk
-        context['title'] = f"Category {self.kwargs['cat_slug']}"
+        c_def = self.get_user_context(title=f"Category {self.kwargs['cat_slug']}",
+                                      cat_selected=Category.objects.get(slug=self.kwargs['cat_slug']).pk)
+        context.update(c_def)
         return context
 
     def get_queryset(self):
         return Person.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
 
 
-class ShowPost(DetailView):
+class ShowPost(DataMixin, DetailView):
     model = Person
     template_name = 'base/show_post.html'
     slug_url_kwarg = 'post_slug'
@@ -46,9 +49,35 @@ class ShowPost(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ShowPost, self).get_context_data(**kwargs)
-        context['title'] = self.kwargs['post_slug']
         person = Person.objects.get(slug=self.kwargs['post_slug'])
-        context['cat_selected'] = Category.objects.get(name=person.cat).pk
+        c_def = self.get_user_context(title=self.kwargs['post_slug'],
+                                      cat_selected=Category.objects.get(name=person.cat).pk)
+        context.update(c_def)
+        return context
+
+
+class AddPage(LoginRequiredMixin, DataMixin, CreateView):
+    form_class = AddPostForm
+    template_name = 'base/add_post.html'
+    success_url = reverse_lazy('index')
+    login_url = '/admin/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Add post')
+        context.update(c_def)
+        return context
+
+
+class RegisterUser(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'base/register.html'
+    success_url = reverse_lazy('login')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(RegisterUser, self).get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Registration')
+        context.update(c_def)
         return context
 
 
@@ -81,17 +110,17 @@ class ShowPost(DetailView):
 #     return render(request, 'base/index.html', context)
 #
 
-def show_post(request, post_slug):
-    person = get_object_or_404(Person, slug=post_slug)
-    print(person.cat.pk)
-    context = {
-        'title': f'{person.title}',
-        'person': person,
-        'cat_selected': person.cat.pk
-
-    }
-
-    return render(request, 'base/show_post.html', context)
+# def show_post(request, post_slug):
+#     person = get_object_or_404(Person, slug=post_slug)
+#     print(person.cat.pk)
+#     context = {
+#         'title': f'{person.title}',
+#         'person': person,
+#         'cat_selected': person.cat.pk
+#
+#     }
+#
+#     return render(request, 'base/show_post.html', context)
 
 
 def about(request):
@@ -105,22 +134,22 @@ def about(request):
     return render(request, 'base/about.html', context)
 
 
-def addpage(request):
-    if request.method == 'POST':
-        form = AddPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            # print(form.cleaned_data)
-            form.save()
-            return redirect('index')
-    else:
-        form = AddPostForm()
-
-    context = {
-        'title': 'Add post',
-        'form': form
-    }
-
-    return render(request, 'base/add_post.html', context)
+# def addpage(request):
+#     if request.method == 'POST':
+#         form = AddPostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             # print(form.cleaned_data)
+#             form.save()
+#             return redirect('index')
+#     else:
+#         form = AddPostForm()
+#
+#     context = {
+#         'title': 'Add post',
+#         'form': form
+#     }
+#
+#     return render(request, 'base/add_post.html', context)
 
 
 def feedback(request):
