@@ -1,4 +1,5 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -6,7 +7,7 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Person, Category, Menu
-from .forms import AddPostForm, RegisterUserForm
+from .forms import AddPostForm, RegisterUserForm, LoginUserForm
 from .utils import DataMixin
 
 
@@ -81,46 +82,18 @@ class RegisterUser(DataMixin, CreateView):
         return context
 
 
-# def index(request):
-#     persons = Person.objects.all()
-#     context = {
-#         "persons": persons,
-#         "title": "Main page",
-#         'cat_selected': 0
-#     }
-#     return render(request, "base/index.html", context)
+class LoginUser(DataMixin, LoginView):
+    form_class = LoginUserForm
+    template_name = 'base/login.html'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        contex = super(LoginUser, self).get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Login')
+        contex.update(c_def)
+        return contex
 
-# def categories(request, cat_slug):
-#     persons = Person.objects.filter(cat__slug=cat_slug)
-#     try:
-#         cat = Category.objects.get(slug=cat_slug)
-#     except:
-#         return redirect('index')
-#
-#     context = {
-#         "persons": persons,
-#         'title': f'Category {cat.name}',
-#         'cat_selected': cat.pk
-#     }
-#
-#     if request.method == 'GET':
-#         if request.GET:
-#             context.update(request.GET.items())
-#     return render(request, 'base/index.html', context)
-#
-
-# def show_post(request, post_slug):
-#     person = get_object_or_404(Person, slug=post_slug)
-#     print(person.cat.pk)
-#     context = {
-#         'title': f'{person.title}',
-#         'person': person,
-#         'cat_selected': person.cat.pk
-#
-#     }
-#
-#     return render(request, 'base/show_post.html', context)
+    def get_success_url(self):
+        return reverse_lazy('index')
 
 
 def about(request):
@@ -132,24 +105,6 @@ def about(request):
         'cats': cats
     }
     return render(request, 'base/about.html', context)
-
-
-# def addpage(request):
-#     if request.method == 'POST':
-#         form = AddPostForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             # print(form.cleaned_data)
-#             form.save()
-#             return redirect('index')
-#     else:
-#         form = AddPostForm()
-#
-#     context = {
-#         'title': 'Add post',
-#         'form': form
-#     }
-#
-#     return render(request, 'base/add_post.html', context)
 
 
 def feedback(request):
