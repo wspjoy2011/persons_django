@@ -130,3 +130,5 @@ dmypy.json
 .pyre/
 /persons/base/migrations/0001_initial.py
 /persons/base/migrations/
+/persons_cache/*.djcache
+
