@@ -1,3 +1,4 @@
+from django.contrib.auth import logout, login
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotFound, Http404
@@ -5,6 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 from .models import Person, Category, Menu
 from .forms import AddPostForm, RegisterUserForm, LoginUserForm
@@ -23,7 +25,7 @@ class PersonHome(DataMixin, ListView):
         return context
 
     def get_queryset(self):
-        return Person.objects.filter(is_published=True)
+        return Person.objects.filter(is_published=True).select_related('cat')
 
 
 class PersonCategory(DataMixin, ListView):
@@ -33,13 +35,14 @@ class PersonCategory(DataMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title=f"Category {self.kwargs['cat_slug']}",
-                                      cat_selected=Category.objects.get(slug=self.kwargs['cat_slug']).pk)
+        c = Category.objects.get(slug=self.kwargs['cat_slug'])
+        c_def = self.get_user_context(title=f"Category {c.name}",
+                                      cat_selected=c.pk)
         context.update(c_def)
         return context
 
     def get_queryset(self):
-        return Person.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
+        return Person.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True).select_related('cat')
 
 
 class ShowPost(DataMixin, DetailView):
@@ -81,6 +84,11 @@ class RegisterUser(DataMixin, CreateView):
         context.update(c_def)
         return context
 
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('index')
+
 
 class LoginUser(DataMixin, LoginView):
     form_class = LoginUserForm
@@ -111,8 +119,9 @@ def feedback(request):
     return HttpResponse('<h1>Feedback</h1>')
 
 
-def login(request):
-    return HttpResponse('<h1>Login</h1>')
+def logout_user(request):
+    logout(request)
+    return redirect('login')
 
 
 def page_not_found(request, exception):
