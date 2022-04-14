@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from .models import Person, Category, Menu
-from .forms import AddPostForm, RegisterUserForm, LoginUserForm
+from .forms import AddPostForm, RegisterUserForm, LoginUserForm, ContactForm
 from .utils import DataMixin
 
 
@@ -116,7 +116,7 @@ def about(request):
 
 
 class ContactFormView(DataMixin, FormView):
-    form_class = ''
+    form_class = ContactForm
     template_name = 'base/contact.html'
     success_url = reverse_lazy('index')
 

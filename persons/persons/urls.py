@@ -22,7 +22,8 @@ from persons import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('base.urls'))
+    path('', include('base.urls')),
+    path('captcha/', include('captcha.urls'))
 ]
 
 if settings.DEBUG:
