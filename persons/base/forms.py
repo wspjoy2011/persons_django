@@ -44,8 +44,14 @@ class LoginUserForm(AuthenticationForm):
                                widget=forms.PasswordInput(attrs={'class': 'form-input'}))
 
 
-class ContactForm(forms.Form):
-    name = forms.CharField(label='Name', max_length=150)
-    email = forms.EmailField(label='Email')
-    content = forms.CharField(widget=forms.Textarea(attrs={'cols': 60, 'rows': 10}))
+class ContactForm(forms.ModelForm):
     captcha = CaptchaField()
+
+    class Meta:
+        model = Feedback
+        fields = ['name', 'email', 'content']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-input'}),
+            'email': forms.TextInput(attrs={'class': 'form-input'}),
+            'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
+        }

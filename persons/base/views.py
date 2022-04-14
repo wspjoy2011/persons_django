@@ -7,8 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-
-from .models import Person, Category, Menu
+from .models import Person, Category, Menu, Feedback
 from .forms import AddPostForm, RegisterUserForm, LoginUserForm, ContactForm
 from .utils import DataMixin
 
@@ -127,12 +126,8 @@ class ContactFormView(DataMixin, FormView):
         return context
 
     def form_valid(self, form):
-        print(form.cleaned_data)
+        form.save()
         return redirect('index')
-
-
-def feedback(request):
-    return HttpResponse('<h1>Feedback</h1>')
 
 
 def logout_user(request):

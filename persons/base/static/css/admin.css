@@ -1,0 +1,7 @@
+#header, .module caption {
+    background-color: hsla(50, 33%, 25%, .75);
+}
+
+#content-related {
+    margin-right: -600px;
+}

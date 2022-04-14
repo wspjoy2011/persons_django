@@ -48,3 +48,16 @@ class Menu(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Feedback(models.Model):
+    name = models.CharField(max_length=150, db_index=True)
+    email = models.EmailField(max_length=150)
+    content = models.TextField()
+    time_create = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-time_create']
+
+    def __str__(self):
+        return self.name

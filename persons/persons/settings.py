@@ -64,7 +64,7 @@ ROOT_URLCONF = 'persons.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,7 +126,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
-
+USE_L10N = False
+DATE_FORMAT = 'd-m-Y'
+DATETIME_FORMAT = 'd b Y - H:i:s'
 USE_TZ = True
 
 
